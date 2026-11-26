@@ -1,0 +1,434 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "LSP系统",
+    "description": "Lsp Backend API Documentation",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "test"
+    },
+    {
+      "name": "test/LspQuote"
+    },
+    {
+      "name": "test/LspQuote/quote-task-controller"
+    },
+    {
+      "name": "test/LspQuote/quote-task-controller/QuoteTaskController"
+    }
+  ],
+  "paths": {
+    "/quote/price_sync": {
+      "post": {
+        "summary": "承运商运费计算同步接口",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "test/LspQuote/quote-task-controller/QuoteTaskController"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteTaskDto",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestResultListQuotePriceSyncVo"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "QuoteTaskAddressDto": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": ""
+          },
+          "state": {
+            "type": "string",
+            "description": ""
+          },
+          "suburb": {
+            "type": "string",
+            "description": ""
+          },
+          "postcode": {
+            "type": "string",
+            "description": ""
+          },
+          "address1": {
+            "type": "string",
+            "description": ""
+          },
+          "address2": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "required": [
+          "country",
+          "state",
+          "suburb",
+          "postcode",
+          "address1"
+        ]
+      },
+      "QuoteTaskDto": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "description": "请求唯一ID"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "归属人 ID"
+          },
+          "orderCode": {
+            "type": "string",
+            "description": "ERP 销售订单号",
+            "maxLength": 32
+          },
+          "carrierStrategyCode": {
+            "type": "string",
+            "description": "@NotBlank(message = \"carrierStrategyCode must not null\")\n物流策略编码, 可以从策略列表接口中获得,也可传数组ID集合,规则：VIR|carrierId|carrierId"
+          },
+          "carrierIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "承运商ID数组"
+          },
+          "shipmentType": {
+            "type": "string",
+            "description": "shipment type, 计费流水号分类"
+          },
+          "shipTo": {
+            "$ref": "#/components/schemas/QuoteTaskAddressDto",
+            "description": "派件地信息"
+          },
+          "warehouse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteTaskWarehouseDto",
+              "description": "com.hpsoft.lsp.quote.dto.QuoteTaskWarehouseDto"
+            },
+            "description": "发件地信息"
+          },
+          "isPushWms": {
+            "type": "boolean",
+            "description": "是否推送结果到终端, 与 pushResultTo 关联使用"
+          },
+          "pushResultTo": {
+            "type": "integer",
+            "description": "设置结果推送, 默认 100 ,0 不推送 | 100 SCP | 200 WMS | 300 ERP",
+            "enum": [],
+            "default": 100
+          },
+          "shippingType": {
+            "type": "integer",
+            "description": "发货单类型, 100 发货单 | 200 退货单 | 300 手工单 | 600 其他单",
+            "default": 100
+          },
+          "closePoboxCheck": {
+            "type": "integer",
+            "description": "是否关闭 Pobox 检查\n默认 200 | 100 关闭 | 200 不关闭"
+          },
+          "bookingOrderId": {
+            "type": "string",
+            "description": "申报运费计费时要传"
+          }
+        },
+        "required": [
+          "ownerId",
+          "orderCode",
+          "shipTo",
+          "warehouse"
+        ]
+      },
+      "QuoteTaskPackageDto": {
+        "type": "object",
+        "properties": {
+          "packageCode": {
+            "type": "string",
+            "description": ""
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteTaskPackageSkuDto",
+              "description": "com.hpsoft.lsp.quote.dto.QuoteTaskPackageSkuDto"
+            },
+            "description": ""
+          },
+          "length": {
+            "type": "number",
+            "description": "length"
+          },
+          "width": {
+            "type": "number",
+            "description": "width"
+          },
+          "height": {
+            "type": "number",
+            "description": "height"
+          },
+          "weight": {
+            "type": "number",
+            "description": "weight"
+          }
+        },
+        "required": [
+          "packageCode",
+          "items"
+        ]
+      },
+      "QuoteTaskPackageSkuDto": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "description": ""
+          },
+          "qty": {
+            "type": "integer",
+            "description": "",
+            "minimum": 1
+          },
+          "length": {
+            "type": "number",
+            "description": "",
+            "minimum": 0.01
+          },
+          "width": {
+            "type": "number",
+            "description": "",
+            "minimum": 0.01
+          },
+          "height": {
+            "type": "number",
+            "description": "",
+            "minimum": 0.01
+          },
+          "weight": {
+            "type": "number",
+            "description": "",
+            "minimum": 0.01
+          },
+          "cube": {
+            "type": "number",
+            "description": ""
+          },
+          "cubeWeight": {
+            "type": "number",
+            "description": ""
+          }
+        },
+        "required": [
+          "sku",
+          "qty",
+          "length",
+          "width",
+          "height",
+          "weight"
+        ]
+      },
+      "QuoteTaskWarehouseDto": {
+        "type": "object",
+        "properties": {
+          "warehouseCode": {
+            "type": "string",
+            "description": ""
+          },
+          "shipmentCode": {
+            "type": "string",
+            "description": ""
+          },
+          "country": {
+            "type": "string",
+            "description": ""
+          },
+          "state": {
+            "type": "string",
+            "description": ""
+          },
+          "suburb": {
+            "type": "string",
+            "description": ""
+          },
+          "postcode": {
+            "type": "string",
+            "description": ""
+          },
+          "address1": {
+            "type": "string",
+            "description": ""
+          },
+          "address2": {
+            "type": "string",
+            "description": ""
+          },
+          "packages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteTaskPackageDto",
+              "description": "com.hpsoft.lsp.quote.dto.QuoteTaskPackageDto"
+            },
+            "description": ""
+          }
+        },
+        "required": [
+          "warehouseCode",
+          "shipmentCode",
+          "country",
+          "state",
+          "suburb",
+          "postcode",
+          "address1",
+          "packages"
+        ]
+      },
+      "QuotePriceSyncVo": {
+        "type": "object",
+        "properties": {
+          "calcMode": {
+            "type": "integer",
+            "description": "Calculation mode"
+          },
+          "canShipping": {
+            "type": "boolean",
+            "description": "Indicates if shipping is possible"
+          },
+          "agentCode": {
+            "type": "string",
+            "description": "Agent code"
+          },
+          "agentName": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "channelCode": {
+            "type": "string",
+            "description": "Channel code"
+          },
+          "channelName": {
+            "type": "string",
+            "description": "Channel name"
+          },
+          "carrierCode": {
+            "type": "string",
+            "description": "Carrier code"
+          },
+          "carrierName": {
+            "type": "string",
+            "description": "Carrier name"
+          },
+          "bookingCarrierId": {
+            "type": "string",
+            "description": "用于告诉下游申报使用的id\nBooking Carrier Id"
+          },
+          "bookingCarrierCode": {
+            "type": "string",
+            "description": "用于告诉下游申报使用的唯一编码\nBooking Carrier Unique Code"
+          },
+          "bookingCarrierCalc": {
+            "type": "string",
+            "description": "Booking Carrier Calc"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remark or additional information"
+          },
+          "shippingCost": {
+            "type": "number",
+            "description": "Shipping cost"
+          },
+          "choiceShippingCost": {
+            "type": "number",
+            "description": "比价运费"
+          },
+          "shippingCostWithTax": {
+            "type": "number",
+            "description": "Shipping cost with tax"
+          },
+          "surcharge": {
+            "type": "number",
+            "description": "Surcharge"
+          },
+          "closePoboxCheck": {
+            "type": "integer",
+            "description": "关闭pobox过滤"
+          },
+          "isBest": {
+            "type": "integer",
+            "description": "isBest",
+            "default": 2
+          }
+        }
+      },
+      "RestResultListQuotePriceSyncVo": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuotePriceSyncVo",
+              "description": "运费计算同步接口返回数据"
+            },
+            "description": ""
+          },
+          "code": {
+            "type": "string",
+            "description": ""
+          },
+          "msg": {
+            "type": "string",
+            "description": ""
+          },
+          "tc": {
+            "type": "integer",
+            "description": "",
+            "format": "int64"
+          },
+          "tp": {
+            "type": "integer",
+            "description": ""
+          },
+          "hasMore": {
+            "type": "integer",
+            "description": ""
+          },
+          "success": {
+            "type": "boolean",
+            "description": ""
+          }
+        }
+      }
+    },
+    "responses": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
