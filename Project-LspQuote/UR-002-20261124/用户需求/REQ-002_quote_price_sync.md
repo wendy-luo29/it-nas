@@ -1,6 +1,6 @@
 ---
 requirement_id: REQ-001
-version: V1.0
+version: v1.0
 change_type: carrier_onboarding
 carrier: AU.TGE.PRIORITY.PRO
 carrier_id: CAR2025062611067266788
@@ -13,7 +13,7 @@ owner: wendy-luo29
 # 新增承运商 AU.TGE.PRIORITY.PRO 接入报价计费（POST /quote/price_sync）
 
 > **变更类型：新增承运商接入（carrier_onboarding）**
-> 本次需求**不是新增接口**：`POST /quote/price_sync` 是存量接口。本文档保留完整接口契约用于回归（baseline），本次验收范围仅限新增承运商 AU.TGE.PRIORITY.PRO 的计费接入（acceptance）。范围划分见 `requirements/reviews/REQ-002-scope-correction.md`（REV-REQ-002-008）。
+> 本次需求**不是新增接口**：`POST /quote/price_sync` 是存量接口。本文档保留完整接口契约用于回归（baseline），本次验收范围仅限新增承运商 AU.TGE.PRIORITY.PRO 的计费接入（acceptance）。
 
 ## 1. 接口概览
 
@@ -36,12 +36,12 @@ owner: wendy-luo29
 
 | 范围 | 内容 |
 |---|---|
-| **acceptance（本次验收）** | AU.TGE.PRIORITY.PRO 能被策略/VIR 选中；按 PRO 价卡/重量段/fuel/zone 计费；仅支持 calcMode=1；箱规与过滤；与存量承运商比价择优；PRO 任务正确落库；未知仓库 / 不存在的 carrierId → HTTP 500（D-08/D-09） |
+| **acceptance（本次验收）** | AU.TGE.PRIORITY.PRO 能被策略/VIR 选中；按 PRO 价卡/重量段/fuel/zone 计费；仅支持 calcMode=1；箱规与过滤；与存量承运商比价择优；PRO 任务正确落库；未知仓库 / 不存在的 carrierId → HTTP 500 |
 | **baseline（回归，不作为本次新增验收）** | `/quote/price_sync` 的请求/响应契约、鉴权、幂等、单仓、错误码框架、参数校验、推送参数、通用落库口径；缺必填 400 / carrierIds 优先级 / pushResultTo=100 / 无收件区域 |
 
-> **发布口径（REV-REQ-002-008，S-04=C）**：acceptance 17 条全部通过（skip/xfail 不算通过）+ baseline 27 条无新增失败；已登记存量缺陷 D-01~D-05、D-10 作为 known issue 放行，新增失败阻断。D-08/D-09 属 acceptance，修复前不可发版。
+> **发布口径**：acceptance 用例全部通过（skip/xfail 不算通过），baseline 回归无新增失败。未知仓库、不存在的 carrierId 未修复前不可发版。
 
-> **以下 §2-§6、§8、§9 为存量接口基线（baseline）**，用于回归；本次验收项见 §7.2 及 AC 清单中 `scope: acceptance` 的条目。
+> **以下 §2-§6、§8、§9 为存量接口基线（baseline）**，用于回归；本次验收项见 §7.2 的验收口径。
 
 ## 2. 请求定义
 
@@ -442,7 +442,7 @@ Carrier B   calcMode=2  $19.960  (同1)   (合并为内部最优)
 | 组包 | 包裹层全 0 时按 SKU 组包：长取 max、宽取 max、高累加、重累加、三维降序重排 |
 | 精度 | 每一步（单包/续重/燃油/多包合计）四舍五入保留三位小数 |
 | 过滤 | 多承运商场景：PRO 超箱规/无价卡/无收件区域时过滤 PRO，其余正常；仅 PRO 参与且失败时整单失败 |
-| 主数据/承运商校验 | 未知仓库（D-08）、VIR 中不存在的 carrierId（D-09）→ HTTP 500 + code="500"；未知仓库落 `status=300`，carrierId 不存在不落行 |
+| 主数据/承运商校验 | 未知仓库、VIR 中不存在的 carrierId → HTTP 500 + code="500"；未知仓库落 `status=300`，carrierId 不存在不落行 |
 | 落库 | `lsp_quote_task`：`status=200`、`predict_price>0`、`predict_carrier_code` 非空、`predict_calc_mode=1`；地址 2 行、包裹/SKU 与请求一致、`job_log` 有 `action=calc` |
 
 ## 8. 非功能约束
@@ -519,7 +519,7 @@ Carrier B   calcMode=2  $19.960  (同1)   (合并为内部最优)
 | :--- | :--- | :--- |
 | 计算失败（无价卡/无收件区域且无可用承运商 / 未知仓库 / 找不到发运地址 / 超时等） | **落 1 行**：`status=300`、`predict_price=0`、`predict_carrier_code` 为空（2026-11-23 `lsp_scp` 实查 30 天 445 行 status=300 佐证） | 断言 `status=200` 的成功任务数为 0，**不得**断言任务总数=0 |
 | 请求参数校验拒绝（缺必填：HTTP 200、code=400；空串/非法枚举等其余参数校验：HTTP 500、code=500；均进入计费前拦截） | 不落行 | 断言该 `request_id` 任务总数为 0 |
-| 计费日志 | 失败任务同样写 `lsp_quote_task_job_log`：`status=400` + `failed_reason` 非空（实查现网有样例行） | 接口级用例对 `job_log` 只做**软断言**（查询并记录，不判失败），避免写入时机差异导致误报；具体失败类型是否必写日志仍待联调确认（校准点4 残留） |
+| 计费日志 | 失败任务同样写 `lsp_quote_task_job_log`：`status=400` + `failed_reason` 非空（实查现网有样例行） | 接口级用例对 `job_log` 只做**软断言**（查询并记录，不判失败），避免写入时机差异导致误报；具体失败类型是否必写日志待联调确认。 |
 
 #### 9.3.3 测试数据清理
 
@@ -557,4 +557,4 @@ DELETE FROM lsp_quote_task WHERE order_code LIKE 'TESTSO%';
 
 | 版本 | 日期 | 变更点 | 影响范围 |
 |---|---|---|---|
-| V1.0 | 2026-11-18 | 新增承运商价卡计费：ubi-toll-AU.TGE.PRIORITY.PRO | 1. 新增承运商价卡计费<br>2. 比价择优加入新的承运商比价 |
+| v1.0 | 2026-11-18 | 新增承运商价卡计费：ubi-toll-AU.TGE.PRIORITY.PRO | 1. 新增承运商价卡计费<br>2. 比价择优加入新的承运商比价 |
