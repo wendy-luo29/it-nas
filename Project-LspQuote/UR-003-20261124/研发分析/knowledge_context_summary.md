@@ -6,7 +6,7 @@
 
 | 文档 | 版本 / 状态 | 与本次变更的关系 |
 |---|---|---|
-| `knowledge/rules/lsp_quote/pricing_generic.md` | v1.0 draft | 仅有通用计费公式，**未定义燃油附加费**；本次需以需求表格为准 |
+| `Common/业务规则/lsp_quote/pricing_generic.md` | v1.0 draft | 仅有通用计费公式，**未定义燃油附加费**；本次需以需求表格为准 |
 | `requirements/docs/REQ-002_quote_price_sync.md` | V1.1 | 提供 `/quote/price_sync` 报文与金额口径；现有用例金额含燃油系数（如 PRO ×1.2861） |
 | `config/lsp_quote/price_sync.yaml` | — | 提供基准报文、BG03 仓库、Haymarket 2000 目的地、`lsp_carrier_rate.fuel_rate` 取数 SQL 模板 |
 
