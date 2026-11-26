@@ -6,7 +6,7 @@ carrier: AU.TGE.PRIORITY.PRO
 carrier_id: CAR2025062611067266788
 source: Apifox 导出 OpenAPI 3.0.1（LspQuote / QuoteTaskController）
 original_file: all.v1.0.0.json
-updated_at: 2026-11-24
+updated_at: 2026-11-26
 owner: wendy-luo29
 ---
 
@@ -552,9 +552,3 @@ DELETE FROM lsp_quote_task WHERE order_code LIKE 'TESTSO%';
 | 下游服务 | 各承运商询价接口；SCP / WMS / ERP（推送） |  |
 | 消息事件 | — | — |
 | 副作用 | `isPushWms=100` 时可能写库或发送消息 |  |
-
-## 11. 变更记录
-
-| 版本 | 日期 | 变更点 | 影响范围 |
-|---|---|---|---|
-| v1.0 | 2026-11-18 | 新增承运商价卡计费：ubi-toll-AU.TGE.PRIORITY.PRO | 1. 新增承运商价卡计费<br>2. 比价择优加入新的承运商比价 |

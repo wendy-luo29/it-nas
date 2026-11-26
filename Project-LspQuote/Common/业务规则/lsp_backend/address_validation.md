@@ -5,7 +5,7 @@ version: v2.1
 status: active
 confirmed_by: 业务方
 confirmed_date: 2026-11-15
-source_requirement: UR-001-20261115/接口文档/all.v2.1.0.json
+source_requirement: Common/变更记录/2026-11-15_address_v2_1.md
 related_cases: [TC-ADDR-001, TC-ADDR-002, TC-ADDR-003]
 related_gotchas: [gotcha_001, gotcha_002]
 ---
