@@ -1,0 +1,208 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "LSP系统",
+    "description": "Lsp Backend API Documentation",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "address-controller"
+    }
+  ],
+  "paths": {
+    "/address/validate": {
+      "post": {
+        "summary": "地址验证",
+        "deprecated": false,
+        "description": "",
+        "operationId": "validateUsingPOST",
+        "tags": [
+          "address-controller"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/%E5%9C%B0%E5%9D%80%E9%AA%8C%E8%AF%81%E8%AF%B7%E6%B1%82DTO"
+              },
+              "example": ""
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestResult%C2%AB%E5%9C%B0%E5%9D%80%E6%A3%80%E9%AA%8C%E5%93%8D%E5%BA%94%C2%BB"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "找不到资源",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RestResult«地址检验响应»": {
+        "title": "RestResult«地址检验响应»",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/%E5%9C%B0%E5%9D%80%E6%A3%80%E9%AA%8C%E5%93%8D%E5%BA%94"
+          },
+          "hasMore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "tc": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tp": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "地址检验响应": {
+        "title": "地址检验响应",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "地址栏"
+          },
+          "address2": {
+            "type": "string",
+            "description": "地址栏2"
+          },
+          "adviceAddress": {
+            "type": "string",
+            "description": "建议地址"
+          },
+          "country": {
+            "type": "string",
+            "description": "国家"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "国家编码"
+          },
+          "fullAddress": {
+            "type": "string",
+            "description": "全文地址"
+          },
+          "isPoBox": {
+            "type": "boolean",
+            "description": "是否 PoBox",
+            "example": false
+          },
+          "orderId": {
+            "type": "string",
+            "description": "自编编号"
+          },
+          "postcode": {
+            "type": "string",
+            "description": "邮编"
+          },
+          "reason": {
+            "type": "string",
+            "description": "拦截原因"
+          },
+          "state": {
+            "type": "string",
+            "description": "省份"
+          },
+          "stateCode": {
+            "type": "string",
+            "description": "省份编码"
+          },
+          "suburb": {
+            "type": "string",
+            "description": "区域"
+          },
+          "suburbCode": {
+            "type": "string",
+            "description": "区域编码"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "验证通过",
+            "example": false
+          }
+        }
+      },
+      "地址验证请求DTO": {
+        "title": "地址验证请求DTO",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "地址栏"
+          },
+          "address2": {
+            "type": "string",
+            "description": "地址栏2"
+          },
+          "country": {
+            "type": "string",
+            "description": "国家, 默认 Australia"
+          },
+          "is_return": {
+            "type": "boolean",
+            "description": "是否返回建议值",
+            "example": false
+          },
+          "order_id": {
+            "type": "string",
+            "description": "自编编号, 用于与结果保持关联, 会直接返回"
+          },
+          "postcode": {
+            "type": "string",
+            "description": "邮编"
+          },
+          "state": {
+            "type": "string",
+            "description": "省份"
+          },
+          "suburb": {
+            "type": "string",
+            "description": "区域"
+          }
+        }
+      }
+    },
+    "responses": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
